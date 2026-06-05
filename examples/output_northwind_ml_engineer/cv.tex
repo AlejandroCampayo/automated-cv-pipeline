@@ -1,0 +1,80 @@
+% Generated example — Jane Doe tailored to Northwind Labs ML Engineer (LLM Applications).
+% Built from data.example/ using prompts/agent_guide.md. Compile: latexmk -pdf cv.tex
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[a4paper,margin=1.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[default]{lato}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+\definecolor{Navy}{HTML}{0A2F5A}
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{666666}
+\colorlet{heading}{Navy}
+\colorlet{emphasis}{SlateGrey}
+\colorlet{body}{LightGrey}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\pagenumbering{gobble}
+\hypersetup{pageanchor=false}
+\setlist[itemize]{leftmargin=1.35em,itemsep=1pt,topsep=1.5pt}
+
+\color{body}
+\titleformat{\section}{\large\bfseries\color{heading}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{8pt}{3pt}
+
+\begin{document}
+
+{\LARGE \textbf{\color{emphasis}Jane Doe}}\\
+Berlin, Germany \textbar\ Open to hybrid / relocation \textbar\ EU work authorization\\
+\href{mailto:jane.doe@example.com}{jane.doe@example.com} \textbar\ (+49) 170 000 0000 \textbar\
+\href{https://www.linkedin.com/in/jane-doe-example/}{LinkedIn} \textbar\
+\href{https://github.com/janedoe}{GitHub}
+
+\section*{Summary}
+ML Engineer with 3+ years shipping production LLM and RAG systems. I own retrieval,
+evaluation, and serving end to end — and I measure quality with real offline/online
+metrics rather than vibes. Strong Python, PyTorch, and cloud (AWS/GCP).
+
+\section*{Experience}
+\textbf{Machine Learning Engineer, Acme AI} \hfill Berlin, Germany\\
+\textit{Mar 2024 -- Present}
+\begin{itemize}
+  \item Own the LLM application stack serving \textasciitilde50k requests/day across three products.
+  \item Built a RAG support assistant (LangChain + pgvector) that cut ticket resolution from 6h to 1.5h.
+  \item Designed offline + online (A/B) evaluation harnesses; raised answer accuracy 78\% $\rightarrow$ 91\%.
+  \item Set up CI for prompt and model changes, reducing bad-deploy rollbacks by \textasciitilde70\%.
+\end{itemize}
+
+\textbf{Data Scientist, Globex Analytics} \hfill Remote (EU)\\
+\textit{Jul 2022 -- Feb 2024}
+\begin{itemize}
+  \item Built end-to-end ETL pipelines (Airflow + dbt + Snowflake) feeding automated dashboards.
+  \item Shipped a demand-forecasting model that cut client overstock costs by an estimated EUR~400k/year.
+\end{itemize}
+
+\section*{Selected Projects}
+\textbf{Support RAG Assistant} \hfill 2024
+\begin{itemize}
+  \item Retrieval over product docs + tickets with guardrails for out-of-scope queries; FastAPI service.
+\end{itemize}
+
+\section*{Core Skills}
+\textbf{AI \& ML:} LLMs, RAG, embeddings, prompt engineering, PyTorch, Hugging Face, LangChain.\\
+\textbf{Data \& Deployment:} pgvector, Snowflake, Airflow, dbt, Docker, AWS, GCP, CUDA.\\
+\textbf{Practices:} evaluation harnesses, A/B testing, CI for models, monitoring.\\
+\textbf{Languages:} English (native), German (C1), Spanish (B1).
+
+\section*{Education}
+\textbf{M.Sc. Computer Science (Machine Learning), TU Berlin} \hfill 2021 -- 2023\\
+Berlin, Germany
+
+\textbf{B.Sc. Data Science, University of Amsterdam} \hfill 2018 -- 2021\\
+Amsterdam, Netherlands
+
+\end{document}

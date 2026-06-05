@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_response.filePath // .tool_input.file_path' | { read -r f; if [[ \"$f\" == *cv.tex ]]; then dir=$(dirname \"$f\"); cd \"$dir\" && pdflatex -interaction=nonstopmode cv.tex > /dev/null 2>&1 && echo '✓ CV rebuilt successfully' || echo '✗ Build failed'; fi; }",
+            "statusMessage": "Rebuilding CV..."
+          }
+        ]
+      }
+    ]
+  }
+}

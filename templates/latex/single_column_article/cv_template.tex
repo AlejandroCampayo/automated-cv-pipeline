@@ -1,0 +1,75 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[a4paper,margin=1.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[default]{lato}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+\definecolor{Navy}{HTML}{0A2F5A}
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{666666}
+\colorlet{heading}{Navy}
+\colorlet{accent}{Navy}
+\colorlet{emphasis}{SlateGrey}
+\colorlet{body}{LightGrey}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\pagenumbering{gobble}
+\hypersetup{pageanchor=false}
+\setlist[itemize]{leftmargin=1.35em,itemsep=1pt,topsep=1.5pt}
+
+\color{body}
+\titleformat{\section}{\large\bfseries\color{heading}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{8pt}{3pt}
+
+\begin{document}
+
+{\LARGE \textbf{\color{emphasis}FULL NAME}}\\
+CITY, COUNTRY \textbar\ Open to relocate to LOCATION \textbar\ EU Citizen\\
+\href{mailto:EMAIL}{EMAIL} \textbar\ PHONE \textbar\
+\href{LINKEDIN_URL}{LinkedIn} \textbar\
+\href{GITHUB_URL}{GitHub}
+
+\section*{Summary}
+One-paragraph summary tailored to the role.
+
+\section*{Experience}
+\textbf{ROLE, COMPANY} \hfill LOCATION\\
+\textit{DATES}
+\begin{itemize}
+  \item Impact-focused bullet.
+  \item Impact-focused bullet.
+\end{itemize}
+
+\textbf{ROLE, COMPANY} \hfill LOCATION\\
+\textit{DATES}
+\begin{itemize}
+  \item Impact-focused bullet.
+  \item Impact-focused bullet.
+\end{itemize}
+
+\section*{Selected Projects}
+\textbf{PROJECT NAME} \hfill DATE
+\begin{itemize}
+  \item One-line outcome.
+\end{itemize}
+
+\section*{Core Skills}
+\textbf{AI \& Machine Learning:} list.\\
+\textbf{Data \& Deployment:} list.\\
+\textbf{Engineering Practices:} list.\\
+\textbf{Languages:} list.
+
+\section*{Education}
+\textbf{DEGREE, UNIVERSITY} \hfill YEARS\\
+CITY, COUNTRY
+
+\textbf{DEGREE, UNIVERSITY} \hfill YEARS\\
+CITY, COUNTRY
+
+\end{document}
