@@ -40,8 +40,9 @@ An LLM-driven toolkit for a faster, more honest job hunt. It does two things:
 ### B. CV tailoring (prompts + LaTeX)
 - [`prompts/`](prompts/) — the core IP. Agent guides for building, grading, and
   applying. **Hard rule: the model may only use facts present in `data/`.**
-- [`templates/latex/`](templates/latex/) — two ready CV templates (two-column AltaCV,
-  single-column article).
+- [`templates/latex/`](templates/latex/) — ready CV templates (single-column article,
+  two-column AltaCV). **Switch or add a template** (incl. mAltaCV) in one config line —
+  see [`docs/templates.md`](docs/templates.md).
 - [`data.example/`](data.example/) — fill-in-the-blank personal data (with a worked
   "Jane Doe" example).
 

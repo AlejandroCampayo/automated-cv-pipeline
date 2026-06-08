@@ -17,10 +17,17 @@ on:
         description: "One-off test: promote any match scoring >= this (0-100) to 'strong'. Leave blank for normal."
         required: false
         default: ""
+      template:
+        description: "One-off: CV template folder under templates/latex/ (e.g. maltacv). Blank = use config."
+        required: false
+        default: ""
 
 concurrency:
   group: daily-jobs
   cancel-in-progress: false
+
+permissions:
+  contents: write   # lets the scheduled run commit state/seen_jobs.json back
 
 jobs:
   run:
@@ -47,8 +54,8 @@ jobs:
             latexmk texlive-latex-recommended texlive-latex-extra \
             texlive-fonts-recommended texlive-fonts-extra \
             texlive-xetex texlive-luatex \
-            texlive-bibtex-extra biber
-            # xetex/luatex: fontspec templates (AltaCV / mAltaCV); bibtex-extra+biber: AltaCV's biblatex
+            texlive-bibtex-extra biber tex-gyre
+            # xetex/luatex: fontspec templates; bibtex-extra+biber: AltaCV biblatex; tex-gyre: tgheros etc.
 
       - name: Ensure a config exists
         run: |
@@ -64,9 +71,20 @@ jobs:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}   # optional — enables Google Jobs
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}    # optional repo Variable; blank = code default
         run: |
           python scripts/daily_job_pipeline.py --full-pipeline \
-            ${{ github.event.inputs.strong_threshold != '' && format('--strong-threshold {0}', github.event.inputs.strong_threshold) || '' }}
+            ${{ github.event_name == 'schedule' && '--track-seen' || '' }} \
+            ${{ github.event.inputs.strong_threshold != '' && format('--strong-threshold {0}', github.event.inputs.strong_threshold) || '' }} \
+            ${{ github.event.inputs.template != '' && format('--template {0}', github.event.inputs.template) || '' }}
+
+      - name: Persist seen-jobs state
+        if: github.event_name == 'schedule'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add state/seen_jobs.json 2>/dev/null || true
+          git diff --cached --quiet || { git commit -m "Update seen-jobs state [skip ci]"; git push; }
 
       - name: Upload results + generated CVs (debug)
         if: always()

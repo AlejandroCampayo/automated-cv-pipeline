@@ -26,7 +26,7 @@ load_dotenv('.env.local')
 
 
 def main(dry_run=False, test_limit=None, full_pipeline=False, strong_threshold=None,
-         template=None, one_page=None):
+         template=None, one_page=None, track_seen=False):
     print(f"\n{'='*60}")
     print(f"🚀 Daily Job Pipeline - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     print(f"DRY RUN: {dry_run}")
@@ -60,6 +60,20 @@ def main(dry_run=False, test_limit=None, full_pipeline=False, strong_threshold=N
         return False
 
     print(f"✅ Found {len(jobs)} jobs\n")
+
+    # Opt-in: only process offers we haven't seen before (scheduled production run).
+    # Done before grading so already-seen jobs don't even cost Gemini tokens.
+    all_fetched = list(jobs)
+    seen = {}
+    if track_seen:
+        from src.seen_store import load_seen, filter_new, mark_seen, save_seen
+        seen = load_seen()
+        jobs = filter_new(jobs, seen)
+        print(f"🆕 {len(jobs)} new of {len(all_fetched)} jobs (already-seen filtered)\n")
+        if not jobs:
+            print("No new jobs since last run — nothing to grade/email.")
+            save_seen(mark_seen(seen, all_fetched))
+            return True
 
     # Grade all jobs in a single API call
     print(f"📊 Grading {len(jobs)} jobs (single API call)...")
@@ -132,6 +146,12 @@ def main(dry_run=False, test_limit=None, full_pipeline=False, strong_threshold=N
     else:
         print("❌ Email failed")
 
+    # Record everything we fetched this run so the next run only shows new offers.
+    if track_seen:
+        from src.seen_store import mark_seen, save_seen
+        seen = save_seen(mark_seen(seen, all_fetched))
+        print(f"💾 seen-jobs state updated ({len(seen)} ids)")
+
     print(f"\n{'='*60}")
     print(f"✅ Pipeline complete")
     print(f"{'='*60}\n")
@@ -155,6 +175,10 @@ if __name__ == "__main__":
                         help="Force the CV to fit one page (trims content, keeps font readable).")
     parser.add_argument("--no-one-page", dest="one_page", action="store_false",
                         help="Allow the CV to spill onto multiple pages.")
+    parser.add_argument("--track-seen", action="store_true",
+                        help="Only process offers not seen in a previous --track-seen run "
+                             "(persists state/seen_jobs.json). Off by default, so testing "
+                             "keeps the current behavior.")
 
     args = parser.parse_args()
 
@@ -162,7 +186,8 @@ if __name__ == "__main__":
         success = main(dry_run=args.dry_run, test_limit=args.limit,
                        full_pipeline=args.full_pipeline,
                        strong_threshold=args.strong_threshold,
-                       template=args.template, one_page=args.one_page)
+                       template=args.template, one_page=args.one_page,
+                       track_seen=args.track_seen)
         sys.exit(0 if success else 1)
     except KeyboardInterrupt:
         print("\n⚠️  Interrupted")

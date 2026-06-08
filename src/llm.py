@@ -6,7 +6,7 @@ import google.generativeai as genai
 
 # Free-tier model. flash-lite has a far larger free DAILY quota than flash
 # (flash is ~20 requests/day, unusable here). Override with GEMINI_MODEL if your key differs.
-MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
+MODEL = os.getenv("GEMINI_MODEL") or "gemini-2.5-flash-lite"  # empty env -> default
 
 # Per-MINUTE limits are worth waiting out; per-DAY limits are not (they reset hours later).
 MAX_RETRIES = int(os.getenv("GEMINI_MAX_RETRIES", "5"))
@@ -48,7 +48,10 @@ class DailyQuotaExhausted(RuntimeError):
 
 
 def call_model(prompt, temperature=0.3):
-    """Call Gemini with retry/backoff on per-minute limits; fail fast on daily caps."""
+    """Call Gemini with retry/backoff. A 429 always gets a bounded backoff first —
+    Gemini's error often lists BOTH the per-minute and per-day quotas, so we can't
+    treat "PerDay appears in the text" as proof the daily cap is the real blocker.
+    We only declare daily-exhaustion after a couple of waits fail to clear it."""
     _ensure_configured()
     model = genai.GenerativeModel(MODEL)
     for attempt in range(1, MAX_RETRIES + 1):
@@ -57,21 +60,22 @@ def call_model(prompt, temperature=0.3):
                 prompt, generation_config={"temperature": temperature}
             )
         except Exception as e:
-            if _is_daily_quota(e):
+            rate, daily, transient = _is_rate_limit(e), _is_daily_quota(e), _is_transient(e)
+            # Daily-cited errors get fewer retries (likely really exhausted), but still
+            # at least one wait — in case it's actually a mislabeled per-minute burst.
+            allowed = 2 if daily else MAX_RETRIES
+            if (rate or transient) and attempt < allowed:
+                wait = (min(_retry_seconds(e, default=20 * attempt), 60) if rate
+                        else min(3 * attempt, 15))
+                label = "quota (daily?)" if daily else ("rate-limited" if rate else "transient")
+                print(f"      ⏳ {label}; waiting {wait:.0f}s (attempt {attempt}/{allowed})")
+                time.sleep(wait)
+                continue
+            if daily:
                 raise DailyQuotaExhausted(
-                    f"Daily free-tier quota for '{MODEL}' is exhausted (resets ~midnight "
-                    f"Pacific). Try GEMINI_MODEL=gemini-2.5-flash-lite or wait."
+                    f"Free-tier quota for '{MODEL}' still exhausted after retries "
+                    f"(per-day cap resets ~midnight Pacific). Try another GEMINI_MODEL or wait."
                 ) from e
-            if _is_rate_limit(e) and attempt < MAX_RETRIES:
-                wait = _retry_seconds(e, default=min(20 * attempt, 60))
-                print(f"      ⏳ rate-limited; waiting {wait:.0f}s (attempt {attempt}/{MAX_RETRIES})")
-                time.sleep(wait)
-                continue
-            if _is_transient(e) and attempt < MAX_RETRIES:
-                wait = min(3 * attempt, 15)
-                print(f"      ↻ transient error; retrying in {wait}s (attempt {attempt}/{MAX_RETRIES})")
-                time.sleep(wait)
-                continue
             raise
 
 

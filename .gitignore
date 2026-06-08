@@ -37,3 +37,6 @@ __pycache__/
 
 # IDE / OS
 .DS_Store
+
+# new-since-last-run state
+!state/seen_jobs.json

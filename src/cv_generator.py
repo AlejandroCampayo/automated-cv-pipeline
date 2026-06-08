@@ -79,6 +79,16 @@ def _copy_template_assets(template_path, out_dir):
             print(f"      ⚠️  could not copy template asset {name}: {e}")
 
 
+def _error_excerpt(log, max_chars=1200):
+    """Pull the meaningful LaTeX error (the '! ...' line + its 'l.NN' context) from the
+    log. The error is near the END of the log, so naive truncation hides it."""
+    lines = (log or "").splitlines()
+    idx = next((i for i, l in enumerate(lines) if l.startswith("!")), None)
+    if idx is None:
+        return (log or "")[-max_chars:]  # fall back to the TAIL, not the head
+    return "\n".join(lines[idx:idx + 14])[:max_chars]
+
+
 def _page_count(pdf_path, log):
     """Best-effort page count: parse the LaTeX log, then fall back to pdfinfo."""
     m = re.search(r"Output written on \S+ \((\d+) pages?", log or "")
@@ -137,6 +147,10 @@ HARD RULES:
 - Output ONLY the LaTeX source. No markdown, no ``` fences, no commentary.
 - Keep it to a single page. Escape LaTeX special characters (%, &, _, #).
 - Keep the template's document class and packages; only change the content.
+- Use the template's OWN commands with EXACTLY the number of arguments shown in the
+  template. Do not add or remove arguments (e.g. if the name command takes one argument
+  with the full name, do not split it into two). Place the header/personal-info commands
+  exactly where the template places them.
 
 GUIDE:
 {guide}
@@ -184,8 +198,13 @@ def generate_cv(job, out_dir, data_dir="data", template_path=DEFAULT_TEMPLATE,
 
         pdf_path, log, pages = compile_tex(tex, out_dir, template_path=template_path, engine=engine)
         if not pdf_path:
-            print(f"      ✗ compile failed (attempt {attempt}); retrying with error feedback")
-            feedback = "The LaTeX did NOT compile. Fix it. Compiler error excerpt:\n" + (log or "")
+            first_err = next((l for l in (log or "").splitlines()
+                              if l.startswith("!") or "not found" in l), "(no '!' line)")
+            print(f"      ✗ compile failed (attempt {attempt}): {first_err.strip()[:140]}")
+            feedback = ("The LaTeX did NOT compile. Fix it — pay attention to the line the "
+                        "error points at (l.NN) and use each template command with EXACTLY "
+                        "the arguments shown in the template. Compiler error:\n"
+                        + _error_excerpt(log))
             continue
 
         best_pdf = pdf_path  # keep the latest compiling version
