@@ -32,11 +32,14 @@ _ENGINE_FALLBACK = {
 
 
 def _load_data(data_dir="data"):
-    """Concatenate all data/*.md into one block the model can read."""
+    """Concatenate all data/*.md into one block the model can read.
+
+    Lines marked TODO/placeholder are dropped so they can't become filler bullets."""
     parts = []
     for path in sorted(glob.glob(os.path.join(data_dir, "*.md"))):
         with open(path, "r", encoding="utf-8") as f:
-            parts.append(f"### FILE: {os.path.basename(path)}\n{f.read()}")
+            clean = "\n".join(l for l in f.read().splitlines() if "TODO" not in l)
+        parts.append(f"### FILE: {os.path.basename(path)}\n{clean}")
     return "\n\n".join(parts)
 
 
@@ -143,6 +146,12 @@ tailored to the job offer below, using the provided template as the structure.
 
 HARD RULES:
 - Use ONLY facts present in CANDIDATE DATA. Never invent employers, dates, numbers, or skills.
+- CRITICAL — no keyword fabrication: every skill, tool, language, framework, or technology
+  you put in the CV MUST appear in CANDIDATE DATA. NEVER copy a term from the JOB OFFER into
+  the CV unless it is also in the data. If the offer wants something the candidate lacks
+  (e.g. a language or tool not in the data), OMIT it — do not claim it.
+- If an experience or project has no substantive detail in the data (only a placeholder),
+  OMIT it entirely rather than writing a filler bullet.
 - Prioritize the experiences/skills most relevant to this specific offer.
 - Output ONLY the LaTeX source. No markdown, no ``` fences, no commentary.
 - Keep it to a single page. Escape LaTeX special characters (%, &, _, #).

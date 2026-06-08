@@ -110,11 +110,21 @@ def run_for_job(job, grading, data_dir="data", out_root="outputs/job_offers",
     except Exception as e:
         print(f"    CV step failed: {e}")
 
-    # 2. Detailed grading.md
+    # 2. Detailed grading.md — grades the ACTUAL generated CV (not just data-vs-offer),
+    #    and anchors on the digest score so the two graders stay consistent.
     try:
         score = grading.get("overall_score", "?")
-        doc = _gen_doc("prompts/agent_grading.md", job,
-                       extra=f"Digest score so far: {score}/100.\nCANDIDATE DATA:\n{data_block}")
+        cv_path = os.path.join(out_dir, "cv.tex")
+        cv_tex = _read(cv_path) if os.path.exists(cv_path) else "(CV was not generated)"
+        extra = (
+            f"The overall score is {score}/100 (from the first-pass grader). Use THIS as the "
+            f"Overall score and explain/decompose it; do not invent a different overall number.\n\n"
+            f"GRADE THIS EXACT GENERATED CV against the offer — your 'missing keywords' and "
+            f"fix-list must reflect what IS and ISN'T already in this CV:\n```\n{cv_tex}\n```\n\n"
+            f"Flag any skill/tool in the CV that is NOT supported by the candidate data as a "
+            f"fabrication risk.\n\nCANDIDATE DATA:\n{data_block}"
+        )
+        doc = _gen_doc("prompts/agent_grading.md", job, extra=extra)
         with open(os.path.join(out_dir, "grading.md"), "w", encoding="utf-8") as f:
             f.write(doc)
     except Exception as e:
