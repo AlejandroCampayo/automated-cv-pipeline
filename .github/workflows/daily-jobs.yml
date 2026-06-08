@@ -1,17 +1,20 @@
 name: Daily job digest
 
-# Runs the scrape → grade → email pipeline every morning.
-# Requires repo Secrets: GEMINI_API_KEY, GMAIL_ADDRESS, GMAIL_APP_PASSWORD
-# (see docs/github-actions-setup.md).
+# Scrape job sources → grade with Gemini → (optionally) build tailored CVs → email a digest.
+#
+# This template repo ships with the daily SCHEDULE DISABLED so a fresh clone never
+# fail-spams you before it's configured. To run it for real:
+#   1. Add the repo Secrets: GEMINI_API_KEY, GMAIL_ADDRESS, GMAIL_APP_PASSWORD
+#      (and optionally SERPAPI_KEY). See docs/github-actions-setup.md.
+#   2. Uncomment the `schedule:` block below to enable the daily run.
+# Until then you can still trigger it by hand from the Actions tab (workflow_dispatch).
 
 on:
-  schedule:
-    # GitHub cron is UTC. 06:23 UTC ≈ 08:23 in Luxembourg (CEST, summer).
-    # Deliberately off the top-of-hour (:00 is the most congested slot, where GitHub
-    # is most likely to drop scheduled runs). Note: Actions cron is best-effort and
-    # can still be delayed or, rarely, skipped.
-    - cron: "23 6 * * *"
-  workflow_dispatch:      # lets you trigger a run manually from the Actions tab
+  # --- To enable the daily run, add your secrets, then uncomment these 3 lines: ---
+  # schedule:
+  #   # 06:23 UTC, deliberately off the congested top-of-hour. Cron is best-effort.
+  #   - cron: "23 6 * * *"
+  workflow_dispatch:      # manual trigger (always available) from the Actions tab
     inputs:
       strong_threshold:
         description: "One-off test: promote any match scoring >= this (0-100) to 'strong'. Leave blank for normal."

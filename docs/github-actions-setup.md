@@ -37,12 +37,16 @@ go in GitHub's encrypted Secrets store.
 
 ## One-time setup
 
-1. **Create a private repo and push this project to it:**
+1. **Create a PRIVATE repo from this template and add your details.**
    ```bash
+   cp -r data.example data                          # your CV facts (git-ignored by default)
+   cp config/job_preferences.example.md config/job_preferences.md
+   # edit data/*.md and config/job_preferences.md with your info
    gh repo create my-job-bot --private --source=. --push
    ```
-   (or create it on github.com and `git push`). Make sure `config/job_preferences.md`
-   is committed — it's needed by the run.
+   Because it's a **private** repo, commit `config/job_preferences.md` and `data/` to it
+   (the shipped `.gitignore` excludes them — use `git add -f data config/job_preferences.md`).
+   They hold your personal info, so never push them to a public repo.
 
 2. **Add Secrets** — repo → *Settings → Secrets and variables → Actions → New repository secret*.
    Add each of these (values come from your `.env.local`):
@@ -55,9 +59,16 @@ go in GitHub's encrypted Secrets store.
    | `SERPAPI_KEY` | optional | enables the Google Jobs source (free tier ~100/mo) |
    | `GEMINI_PROJECT_ID` | optional | only if your setup needs it |
 
-3. **Confirm the schedule.** Default cron is `0 6 * * *` (UTC) ≈ **08:00 in Luxembourg**
-   during summer (CEST). In winter that's 07:00 local — change to `0 7 * * *` in the
-   workflow if you want 08:00 year-round.
+3. **Enable the daily schedule.** This template ships with the cron **disabled** so a
+   fresh clone never fail-spams you before it has secrets. Once your secrets are set,
+   open `.github/workflows/daily-jobs.yml` and **uncomment** the `schedule:` block:
+   ```yaml
+   on:
+     schedule:
+       - cron: "23 6 * * *"   # 06:23 UTC; pick any time. Avoid :00 (most congested).
+     workflow_dispatch:
+   ```
+   Commit & push. (Cron is UTC and best-effort — GitHub may delay runs by a while.)
 
 4. **Test it now** without waiting for 8am: repo → *Actions → Daily job digest → Run workflow*.
    Check your inbox and the run logs. The manual trigger has an optional

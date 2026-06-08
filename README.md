@@ -73,10 +73,12 @@ python scripts/daily_job_pipeline.py --dry-run
 
 ## Run it daily for free (GitHub Actions)
 
-A scheduled workflow ([`.github/workflows/daily-jobs.yml`](.github/workflows/daily-jobs.yml))
-runs the scrape → grade → email digest every morning at ~08:00, on GitHub's servers, at
-no cost. Set three repo Secrets and you're done. Full guide (incl. why to use a **private**
-repo): [`docs/github-actions-setup.md`](docs/github-actions-setup.md).
+A workflow ([`.github/workflows/daily-jobs.yml`](.github/workflows/daily-jobs.yml)) runs the
+scrape → grade → email digest on GitHub's servers at no cost. The daily **schedule ships
+disabled** so a fresh clone never fails before it's configured — add three repo Secrets and
+uncomment the `schedule:` block to turn it on (you can also trigger it by hand anytime from
+the Actions tab). Full guide (incl. why to use a **private** repo for your data):
+[`docs/github-actions-setup.md`](docs/github-actions-setup.md).
 
 ## Use with any LLM
 
