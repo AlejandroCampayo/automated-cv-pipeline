@@ -25,7 +25,8 @@ from dotenv import load_dotenv
 load_dotenv('.env.local')
 
 
-def main(dry_run=False, test_limit=None, full_pipeline=False, strong_threshold=None):
+def main(dry_run=False, test_limit=None, full_pipeline=False, strong_threshold=None,
+         template=None, one_page=None):
     print(f"\n{'='*60}")
     print(f"🚀 Daily Job Pipeline - {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     print(f"DRY RUN: {dry_run}")
@@ -105,8 +106,13 @@ def main(dry_run=False, test_limit=None, full_pipeline=False, strong_threshold=N
         if strong_pairs:
             print(f"\n🛠️  Full pipeline for {len(strong_pairs)} strong match(es)...")
             try:
-                from src.full_pipeline import run_for_strong_matches
-                artifacts = run_for_strong_matches(strong_pairs)
+                from src.full_pipeline import run_for_strong_matches, resolve_template
+                # CLI overrides config; config provides the defaults.
+                tmpl = resolve_template(template if template is not None else config.get('template'))
+                use_one_page = one_page if one_page is not None else config.get('one_page', True)
+                print(f"  Template: {tmpl} | one-page: {use_one_page}")
+                artifacts = run_for_strong_matches(
+                    strong_pairs, template_path=tmpl, one_page=use_one_page)
                 # Attach the full deliverable set per match: cv.pdf, cv.tex, grading.md,
                 # how_to_apply.md, offer.md.
                 for a in artifacts:
@@ -142,13 +148,21 @@ if __name__ == "__main__":
     parser.add_argument("--strong-threshold", type=int, default=None,
                         help="One-off: treat any match scoring >= this (0-100) as 'strong'. "
                              "Useful to force the full pipeline to fire during testing.")
+    parser.add_argument("--template", default=None,
+                        help="CV template name (folder under templates/latex/) or path. "
+                             "Overrides the 'Template:' config value.")
+    parser.add_argument("--one-page", dest="one_page", action="store_true", default=None,
+                        help="Force the CV to fit one page (trims content, keeps font readable).")
+    parser.add_argument("--no-one-page", dest="one_page", action="store_false",
+                        help="Allow the CV to spill onto multiple pages.")
 
     args = parser.parse_args()
 
     try:
         success = main(dry_run=args.dry_run, test_limit=args.limit,
                        full_pipeline=args.full_pipeline,
-                       strong_threshold=args.strong_threshold)
+                       strong_threshold=args.strong_threshold,
+                       template=args.template, one_page=args.one_page)
         sys.exit(0 if success else 1)
     except KeyboardInterrupt:
         print("\n⚠️  Interrupted")

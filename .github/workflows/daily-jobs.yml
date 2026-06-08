@@ -6,9 +6,11 @@ name: Daily job digest
 
 on:
   schedule:
-    # GitHub cron is UTC. 06:00 UTC ≈ 08:00 in Luxembourg (CEST, summer).
-    # In winter (CET) this fires at 07:00 local — adjust to '0 7 * * *' if you prefer.
-    - cron: "0 6 * * *"
+    # GitHub cron is UTC. 06:23 UTC ≈ 08:23 in Luxembourg (CEST, summer).
+    # Deliberately off the top-of-hour (:00 is the most congested slot, where GitHub
+    # is most likely to drop scheduled runs). Note: Actions cron is best-effort and
+    # can still be delayed or, rarely, skipped.
+    - cron: "23 6 * * *"
   workflow_dispatch:      # lets you trigger a run manually from the Actions tab
     inputs:
       strong_threshold:
@@ -25,9 +27,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
           cache: pip
@@ -43,7 +45,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             latexmk texlive-latex-recommended texlive-latex-extra \
-            texlive-fonts-recommended texlive-fonts-extra
+            texlive-fonts-recommended texlive-fonts-extra \
+            texlive-xetex texlive-luatex \
+            texlive-bibtex-extra biber
+            # xetex/luatex: fontspec templates (AltaCV / mAltaCV); bibtex-extra+biber: AltaCV's biblatex
 
       - name: Ensure a config exists
         run: |
@@ -65,7 +70,7 @@ jobs:
 
       - name: Upload results + generated CVs (debug)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: job-search-output
           path: |

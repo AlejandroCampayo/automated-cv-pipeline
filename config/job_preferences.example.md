@@ -46,6 +46,15 @@
 - **Consider**: 4-5/10 → send email only
 - **Skip**: < 4/10 → don't send
 
+## CV Options
+
+- Template: single_column_article
+- One page: yes
+
+<!-- Template = a folder name under templates/latex/ (e.g. single_column_article,
+     altacv_two_column, or one you add). One page = yes forces the CV onto a single
+     page by cutting the least-relevant content, not by shrinking the font. -->
+
 ---
 
 **Last updated**: YYYY-MM-DD

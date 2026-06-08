@@ -83,6 +83,13 @@ def load_job_preferences(config_file="config/job_preferences.md"):
     if good_match:
         config['threshold_good'] = int(good_match.group(1))
 
+    # CV options: which template, and whether to force a single page.
+    template_match = re.search(r'(?im)^\s*[-*]?\s*Template:\s*(.+?)\s*$', content)
+    config['template'] = template_match.group(1).strip() if template_match else 'single_column_article'
+
+    one_page_match = re.search(r'(?im)^\s*[-*]?\s*One[\s-]?page:\s*(yes|no|true|false)\b', content)
+    config['one_page'] = (one_page_match.group(1).lower() in ('yes', 'true')) if one_page_match else True
+
     return config
 
 def get_user_profile(config):

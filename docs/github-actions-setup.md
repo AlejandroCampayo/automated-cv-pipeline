@@ -99,9 +99,12 @@ goes out, just without that attachment.
 
 Notes:
 - It requires the LaTeX install step (already in the workflow) — adds ~1–2 min per run.
-- Each strong match costs a few extra Gemini calls; the free tier is rate-limited
-  (~5 req/min on `gemini-2.5-flash`), so the pipeline **backs off and retries** rather
-  than failing. Many strong matches in one run just makes it slower, not broken.
+- **Gemini free-tier quotas matter.** Each strong match costs ~3 calls (CV + grading +
+  how-to-apply). The default model is **`gemini-2.5-flash-lite`** because it has a large
+  free *daily* quota; `gemini-2.5-flash` is capped at only ~20 requests/**day** on the
+  free tier and will run dry fast. The pipeline backs off on per-*minute* limits and
+  fails fast (no pointless waiting) on per-*day* caps. Override with the `GEMINI_MODEL`
+  env var / repo variable if your key has different quota.
 - **Real recruiter contacts** in `how_to_apply.md` come from the posting text plus a
   SerpAPI LinkedIn search ([`src/contact_finder.py`](../src/contact_finder.py)) — never
   fabricated. The search runs once per strong match and shares the SerpAPI free quota

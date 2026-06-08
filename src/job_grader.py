@@ -62,7 +62,7 @@ match_type rules: strong=80+, good=60-79, consider=40-59, skip=<40
 
     try:
         from .llm import call_model
-        response = call_model(prompt, temperature=0.3)  # shared rate-limit backoff
+        response = call_model(prompt, temperature=0.3)  # shared model + rate-limit backoff
 
         response_text = response.text.strip()
         if "```json" in response_text:

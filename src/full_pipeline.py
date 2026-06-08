@@ -15,6 +15,27 @@ import datetime
 from .llm import generate_text, strip_code_fences
 from .cv_generator import generate_cv
 
+TEMPLATE_ROOT = "templates/latex"
+
+
+def resolve_template(name_or_path):
+    """Accept a template short name ('maltacv'), a folder, or a full .tex path.
+
+    Returns the path to the template's cv_template.tex (falls back to the
+    single-column default if it can't be found)."""
+    default = os.path.join(TEMPLATE_ROOT, "single_column_article", "cv_template.tex")
+    if not name_or_path:
+        return default
+    if name_or_path.endswith(".tex") and os.path.exists(name_or_path):
+        return name_or_path
+    candidate = os.path.join(TEMPLATE_ROOT, name_or_path, "cv_template.tex")
+    if os.path.exists(candidate):
+        return candidate
+    if os.path.isdir(name_or_path) and os.path.exists(os.path.join(name_or_path, "cv_template.tex")):
+        return os.path.join(name_or_path, "cv_template.tex")
+    print(f"    ⚠️  template '{name_or_path}' not found; using single_column_article")
+    return default
+
 
 def slugify(job, date=None):
     date = date or datetime.date.today().isoformat()
@@ -65,7 +86,8 @@ Write the final document now."""
 
 
 def run_for_job(job, grading, data_dir="data", out_root="outputs/job_offers",
-                template_path="templates/latex/single_column_article/cv_template.tex"):
+                template_path="templates/latex/single_column_article/cv_template.tex",
+                one_page=True):
     """Run the full pipeline for one strong match. Returns a dict of artifacts."""
     out_dir = os.path.join(out_root, slugify(job))
     os.makedirs(out_dir, exist_ok=True)
@@ -82,7 +104,8 @@ def run_for_job(job, grading, data_dir="data", out_root="outputs/job_offers",
 
     # 1. Tailored CV (LaTeX -> PDF)
     try:
-        pdf = generate_cv(job, out_dir, data_dir=data_dir, template_path=template_path)
+        pdf = generate_cv(job, out_dir, data_dir=data_dir,
+                          template_path=template_path, one_page=one_page)
         artifacts["pdf"] = pdf
     except Exception as e:
         print(f"    CV step failed: {e}")
