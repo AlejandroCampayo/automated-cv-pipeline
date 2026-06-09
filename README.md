@@ -19,9 +19,13 @@ Each morning the pipeline emails a digest of graded matches. **Strong** matches 
 with a tailored CV (PDF + editable `.tex`), a grading scorecard, and an application
 strategy attached.
 
-| The daily digest email | A few days of digests in the inbox |
-|---|---|
-| ![Example daily digest email, with strong/good matches and scores](example_mail.png) | ![Inbox showing one digest email per day](picture_bandeja_entrada.png) |
+**The daily digest email** — strong/good matches with scores and attachments:
+
+![Example daily digest email, with strong and good matches and scores](example_mail.png)
+
+**A few days of digests in the inbox:**
+
+![Inbox showing one digest email per day](picture_bandeja_entrada.png)
 
 Want to see the actual generated files (CV, scorecard, how-to-apply) for a job? A complete
 **fictional** example is in [`examples/output_northwind_ml_engineer/`](examples/output_northwind_ml_engineer/).
