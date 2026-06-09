@@ -19,6 +19,10 @@ Each morning the pipeline emails a digest of graded matches. **Strong** matches 
 with a tailored CV (PDF + editable `.tex`), a grading scorecard, and an application
 strategy attached.
 
+▶ **[Watch the demo video](video_demo.mp4)** — search → grade → tailored CV → digest email.
+
+<sub>GitHub plays it in its viewer when you click. (For an inline player, open the README on github.com, edit, and drag-drop the file in.)</sub>
+
 **The daily digest email** — strong/good matches with scores and attachments:
 
 ![Example daily digest email, with strong and good matches and scores](example_mail.png)
