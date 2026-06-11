@@ -8,8 +8,7 @@ An LLM-driven toolkit for a faster, more honest job hunt. It does two things:
    Cursor, Copilot, ChatGPT…) to write a job-specific CV, a grading scorecard, and
    an application strategy — using **only facts from your `data/`**, never invented ones.
 
-> <small>⚠️ This is a sanitized, public template. The example candidate **"Jane Doe"** is fictional. Copy `data.example/` to `data/` and put your own information in.</small>
-
+> <sub>⚠️ This is a sanitized, public template. The example candidate **"Jane Doe"** is fictional. Copy `data.example/` to `data/` and put your own information in.</sub>
 ---
 
 ## Demo
