@@ -24,6 +24,12 @@ Score each dimension 0-10 with a one-line justification. Do NOT average blindly 
 
 - Compute a weighted overall score (0-100).
 - Re-weight when a role clearly emphasizes something (e.g. a hard language gate). State any re-weighting.
+- **Core-stack / domain gate (prevents false "strong"):** judge against the role's actual
+  day-to-day stack, not its title. If the core stack or domain is outside the candidate's
+  (e.g. a Power Platform / Microsoft 365 / low-code IT-infrastructure role, or a stated
+  must-have like "2+ years with X" the candidate lacks) it is at most a **consider** — do not
+  award "strong" (80+) on a shared word like "AI" or generic keyword overlap. A "strong"
+  requires the candidate to plausibly do the core work the role is actually hiring for.
 
 ## Interview-callback probability
 Give a single % band (e.g. 35-45%) for "gets contacted for next round if applying cold via the portal." Calibrate against:
