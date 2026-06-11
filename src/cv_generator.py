@@ -163,6 +163,10 @@ HARD RULES:
   you put in the CV MUST appear in CANDIDATE DATA. NEVER copy a term from the JOB OFFER into
   the CV unless it is also in the data. If the offer wants something the candidate lacks
   (e.g. a language or tool not in the data), OMIT it — do not claim it.
+- The SUMMARY is the most common place this rule is broken: it must describe only skills,
+  tools, sectors, and domains present in CANDIDATE DATA. Do NOT absorb a tool or sector from
+  the JOB OFFER into the summary (e.g. "experienced in Power Apps / Power Automate",
+  "evaluating FinTech/RegTech solutions", "Microsoft 365") unless the data actually has it.
 - If an experience or project has no substantive detail in the data (only a placeholder),
   OMIT it entirely rather than writing a filler bullet.
 - Prioritize the experiences/skills most relevant to this specific offer.
@@ -185,9 +189,11 @@ STYLE (match the template — it is the layout that performs best):
   github.com/...), not the word "LinkedIn". Citizenship goes in Additional Information.
 - Experience dates: prefer tenure ("2 years", + "(Current position)" if ongoing), using a
   data "Tenure:" hint when present; else the date range.
-- Selected Projects: ~3, most-relevant-first, one bullet each. If a project has Demo/repo
-  links in the data, render them after the title (bold, underlined, slate \\color{{emphasis}})
-  with the date \\hfill-right; otherwise just the date on the right.
+- Selected Projects: up to 3, most-relevant-first, one bullet each. Include ONLY projects
+  genuinely relevant to THIS offer; if fewer than 3 fit, include fewer — do NOT pad with an
+  off-topic project (e.g. a graphics renderer for a low-code/IT role) just to reach three.
+  If a project has Demo/repo links in the data, render them after the title (bold, underlined,
+  slate \\color{{emphasis}}) with the date \\hfill-right; otherwise just the date on the right.
 
 GUIDE:
 {guide}

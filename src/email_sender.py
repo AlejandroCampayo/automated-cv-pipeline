@@ -1,5 +1,6 @@
 """Gmail email sender module using SMTP with App Passwords."""
 import os
+import re
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -40,12 +41,20 @@ def send_email(recipient, subject, body_html, reply_to=None, attachments=None):
         # Attach HTML body
         msg.attach(MIMEText(body_html, 'html'))
 
-        # Attach files (PDFs, etc.)
+        # Attach files (PDFs, etc.). Prefix each file with its offer (company_role) so
+        # multiple strong matches don't all arrive as "cv.pdf"/"grading.md". The folder is
+        # "<date>_<company_role>"; move the date to the end so the company/role leads the
+        # filename (e.g. rtl_group_..._2026-06-11__cv.pdf).
         for path in (attachments or []):
             try:
+                folder = os.path.basename(os.path.dirname(path))
+                base = os.path.basename(path)
+                m = re.match(r"(\d{4}-\d{2}-\d{2})_(.+)", folder)
+                prefix = f"{m.group(2)}_{m.group(1)}" if m else folder
+                display = f"{prefix}__{base}" if prefix else base
                 with open(path, "rb") as fh:
-                    part = MIMEApplication(fh.read(), Name=os.path.basename(path))
-                part["Content-Disposition"] = f'attachment; filename="{os.path.basename(path)}"'
+                    part = MIMEApplication(fh.read(), Name=display)
+                part["Content-Disposition"] = f'attachment; filename="{display}"'
                 msg.attach(part)
             except Exception as e:
                 print(f"   ⚠️  Could not attach {path}: {e}")
