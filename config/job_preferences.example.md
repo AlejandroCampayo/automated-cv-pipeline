@@ -48,7 +48,7 @@
 
 ## CV Options
 
-- Template: single_column_article
+- Template: lato_luxembourg
 - One page: yes
 
 <!-- Template = a folder name under templates/latex/ (e.g. single_column_article,

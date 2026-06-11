@@ -48,6 +48,19 @@ def _read(path):
         return f.read()
 
 
+def _escape_href_urls(tex):
+    """Escape '#' and '%' inside \\href{URL}{...} targets.
+
+    These are the two characters that silently break a compile: '%' starts a LaTeX
+    comment (eating the closing brace) and '#' is a parameter token. URLs in the data
+    (e.g. a '...#demo' anchor or a percent-encoded path) routinely contain them, and the
+    LLM can't be trusted to escape every one — so we normalize the generated source."""
+    def esc(m):
+        url = re.sub(r"(?<!\\)([#%])", r"\\\1", m.group(1))
+        return "\\href{" + url + "}"
+    return re.sub(r"\\href\{([^{}]*)\}", esc, tex)
+
+
 def _detect_engine(template_text):
     """Read a '% engine: xelatex' or '% !TEX program = xelatex' hint; default pdflatex."""
     head = "\n".join(template_text.splitlines()[:5]).lower()
@@ -154,12 +167,27 @@ HARD RULES:
   OMIT it entirely rather than writing a filler bullet.
 - Prioritize the experiences/skills most relevant to this specific offer.
 - Output ONLY the LaTeX source. No markdown, no ``` fences, no commentary.
-- Keep it to a single page. Escape LaTeX special characters (%, &, _, #).
+- Keep it to a single page. Escape LaTeX special characters (%, &, _, #). Inside \\href{{...}}
+  URLs a literal # must be written \\# (e.g. a ...#demo anchor) or compilation fails.
 - Keep the template's document class and packages; only change the content.
 - Use the template's OWN commands with EXACTLY the number of arguments shown in the
   template. Do not add or remove arguments (e.g. if the name command takes one argument
   with the full name, do not split it into two). Place the header/personal-info commands
   exactly where the template places them.
+
+STYLE (match the template — it is the layout that performs best):
+- Keep the preamble verbatim (margins, colours, parskip, list/title spacing).
+- Preferred sections, in order: Summary, Experience, Selected Projects, Education, Additional
+  Information. You MAY add ONE extra section only if the data clearly supports it AND it helps
+  the role — but NEVER a standalone "Skills" block; fold skills into Summary/bullets/Additional
+  Information.
+- Header: keep accents from the data; show the FULL url as link text (linkedin.com/in/...,
+  github.com/...), not the word "LinkedIn". Citizenship goes in Additional Information.
+- Experience dates: prefer tenure ("2 years", + "(Current position)" if ongoing), using a
+  data "Tenure:" hint when present; else the date range.
+- Selected Projects: ~3, most-relevant-first, one bullet each. If a project has Demo/repo
+  links in the data, render them after the title (bold, underlined, slate \\color{{emphasis}})
+  with the date \\hfill-right; otherwise just the date on the right.
 
 GUIDE:
 {guide}
@@ -204,6 +232,7 @@ def generate_cv(job, out_dir, data_dir="data", template_path=DEFAULT_TEMPLATE,
         if "\\documentclass" not in tex or "\\end{document}" not in tex:
             feedback = "Output was not a complete LaTeX document."
             continue
+        tex = _escape_href_urls(tex)  # normalize #/% in URLs so a stray one can't break the build
 
         pdf_path, log, pages = compile_tex(tex, out_dir, template_path=template_path, engine=engine)
         if not pdf_path:
