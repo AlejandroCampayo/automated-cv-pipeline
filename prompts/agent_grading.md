@@ -31,8 +31,17 @@ Give a single % band (e.g. 35-45%) for "gets contacted for next round if applyin
 - Volume/competition of the channel (mass job board < niche posting < direct).
 State the 2-3 factors that most move the number.
 
+## Formatting
+- Output ONLY the finished `grading.md` in GitHub-flavoured Markdown. Do not restate these
+  instructions or wrap the whole thing in a code fence.
+- Start with a single H1 title: `# CV Grading — <Company>: <Role>`, then a short bullet block:
+  `- CV: [cv.pdf](cv.pdf) / [cv.tex](cv.tex)`, `- Offer: [<relative path to the offer .md>](...)`,
+  `- Graded: <YYYY-MM-DD>`. Use RELATIVE links, never absolute filesystem paths.
+- If an overall score is provided to you, use THAT as the Overall score and decompose it; do
+  not invent a different overall number.
+
 ## Required sections in grading.md
-1. **Header** — company, role, date, CV path.
+1. **Header** — the title + bullet block described under Formatting.
 2. **Overall** — weighted score /100 + callback probability band + one-sentence verdict.
 3. **Decoupled scores** — the table above, filled, each with justification.
 4. **Missing keywords** — concrete terms in the offer absent from the CV (ATS risk). Mark which are fabricatable-NO (candidate lacks it) vs. addable-YES (candidate has it in `data/` but it was omitted).

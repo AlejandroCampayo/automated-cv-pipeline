@@ -1,0 +1,93 @@
+% Template: lato_luxembourg
+% Single-column Lato CV. This is the layout that has performed best (it landed an
+% interview). KEEP the preamble, fonts, colours, spacing and the header format exactly
+% as-is — only replace the CONTENT. Section order below is the preferred default; you may
+% add ONE extra section (e.g. Certifications, Publications) if the data strongly supports
+% it and it helps the role, but do NOT add a generic standalone "Skills" block — fold
+% skills into the Summary, the bullets, and Additional Information.
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[a4paper,margin=1.6cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[default]{lato}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+\definecolor{Navy}{HTML}{0A2F5A}
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{666666}
+\colorlet{heading}{Navy}
+\colorlet{accent}{Navy}
+\colorlet{emphasis}{SlateGrey}
+\colorlet{body}{LightGrey}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\pagenumbering{gobble}
+\hypersetup{pageanchor=false}
+\setlist[itemize]{leftmargin=1.4em,itemsep=1.5pt,topsep=2pt}
+
+\color{body}
+\titleformat{\section}{\large\bfseries\color{heading}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{10pt}{4pt}
+
+\begin{document}
+
+% --- Header: keep accents from the data; show the FULL url as the link text (not the word
+% "LinkedIn"). Personal extras like citizenship go in Additional Information, not here.
+{\LARGE \textbf{\color{emphasis}FULL NAME}}\\
+CITY, COUNTRY \textbar\ Open to relocate to LOCATION\\
+\href{mailto:EMAIL}{EMAIL} \textbar\ PHONE \textbar\
+\href{LINKEDIN_URL}{linkedin.com/in/your-handle} \textbar\
+\href{GITHUB_URL}{github.com/your-handle}
+
+\section*{Summary}
+One dense paragraph (3 lines) tailored to the role. Weave in the key tools/keywords here
+instead of a separate skills list.
+
+\section*{Experience}
+% Date line: prefer tenure ("2 years", add "(Current position)" if ongoing) over month ranges.
+\textbf{ROLE, COMPANY} \hfill CITY, COUNTRY\\
+\textit{N years (Current position)}
+\begin{itemize}
+  \item Impact-focused bullet.
+  \item Impact-focused bullet.
+\end{itemize}
+
+\textbf{ROLE, COMPANY} \hfill CITY, COUNTRY\\
+\textit{N years}
+\begin{itemize}
+  \item Impact-focused bullet.
+  \item Impact-focused bullet.
+\end{itemize}
+
+\section*{Selected Projects}
+% ~3 projects, most-relevant-first, one bullet each. If a project has Demo/repo links in the
+% data, render them right after the title like the first example (bold + underlined, slate
+% colour) with the date on the right; otherwise just the date on the right (second example).
+\textbf{PROJECT NAME} \quad {\color{emphasis}\textbf{\underline{\href{DEMO_URL}{Demo}}} \textbar\ \textbf{\underline{\href{REPO_URL}{GitHub code}}}} \hfill DATE
+\begin{itemize}
+  \item One-line outcome.
+\end{itemize}
+
+\textbf{PROJECT NAME} \hfill DATE
+\begin{itemize}
+  \item One-line outcome.
+\end{itemize}
+
+\section*{Education}
+\textbf{DEGREE, UNIVERSITY} \hfill YEARS\\
+CITY, COUNTRY
+
+\textbf{DEGREE, UNIVERSITY} \hfill YEARS\\
+CITY, COUNTRY
+
+\section*{Additional Information}
+Languages: list with levels.\\
+Work authorization: from data.\\
+Collaboration: one short line, from data.
+
+\end{document}
