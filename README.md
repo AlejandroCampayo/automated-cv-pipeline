@@ -22,8 +22,6 @@ strategy attached.
 https://github.com/user-attachments/assets/5e7d043a-54f8-48b1-9529-429a05a5e5d3
 
 
-<sub>GitHub plays it in its viewer when you click. (For an inline player, open the README on github.com, edit, and drag-drop the file in.)</sub>
-
 **The daily digest email** — strong/good matches with scores and attachments:
 
 ![Example daily digest email, with strong and good matches and scores](example_mail.png)
